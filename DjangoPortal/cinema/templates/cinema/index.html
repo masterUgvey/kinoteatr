@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Онлайн-кинотеатр</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'cinema/style.css' %}">
+    <link rel="stylesheet" href="{% static 'cinema/styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="{{ selected_theme }}-theme">
     <div class="container">
         <header>
             <h1><i class="fas fa-film"></i> Онлайн-кинотеатр</h1>
@@ -18,19 +18,32 @@
         <main>
             <!-- Форма выбора жанра -->
             <section class="genre-selection">
-                <h2>Выберите предпочитаемый жанр</h2>
+                <h2><i class="fas fa-cog"></i> Настройки</h2>
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.genre }}
-                    <button type="submit" class="btn"><i class="fas fa-filter"></i> Применить</button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>{{ form.genre.label }}</label>
+                            {{ form.genre }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.theme.label }}</label>
+                            {{ form.theme }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn"><i class="fas fa-save"></i> Сохранить настройки</button>
                 </form>
-                <p class="cookie-notice">
-                    {% if request.COOKIES.preferred_genre %}
-                        Ваш сохранённый жанр: <strong>{{ selected_genre }}</strong> (сохранено в cookies на 30 дней)
-                    {% else %}
-                        Выберите жанр, и он сохранится в cookies на 30 дней.
-                    {% endif %}
-                </p>
+                <div class="cookie-notice">
+                    <p>
+                        {% if request.COOKIES.preferred_genre %}
+                            Ваш сохранённый жанр: <strong>{{ selected_genre }}</strong> 
+                            | Тема: <strong>{{ selected_theme }}</strong>
+                            (настройки сохранены в cookies на 30 дней)
+                        {% else %}
+                            Выберите настройки, и они сохранятся в cookies на 30 дней.
+                        {% endif %}
+                    </p>
+                </div>
             </section>
 
             <!-- Сетка фильмов -->
@@ -67,7 +80,7 @@
         </main>
 
         <footer>
-            <p>© 2023 Онлайн-кинотеатр. Все права защищены.</p>
+            <p>© 2026 Онлайн-кинотеатр. Все права защищены.</p>
             <p>Сайт использует cookies для сохранения ваших предпочтений.</p>
         </footer>
     </div>

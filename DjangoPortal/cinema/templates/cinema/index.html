@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-кинотеатр</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'cinema/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-film"></i> Онлайн-кинотеатр</h1>
+            <p>Смотрите фильмы любимых жанров в любом месте</p>
+        </header>
+
+        <main>
+            <!-- Форма выбора жанра -->
+            <section class="genre-selection">
+                <h2>Выберите предпочитаемый жанр</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.genre }}
+                    <button type="submit" class="btn"><i class="fas fa-filter"></i> Применить</button>
+                </form>
+                <p class="cookie-notice">
+                    {% if request.COOKIES.preferred_genre %}
+                        Ваш сохранённый жанр: <strong>{{ selected_genre }}</strong> (сохранено в cookies на 30 дней)
+                    {% else %}
+                        Выберите жанр, и он сохранится в cookies на 30 дней.
+                    {% endif %}
+                </p>
+            </section>
+
+            <!-- Сетка фильмов -->
+            <section class="movies">
+                <h2>
+                    {% if selected_genre == 'all' %}
+                        Все фильмы
+                    {% else %}
+                        Фильмы в жанре "{{ selected_genre }}"
+                    {% endif %}
+                    ({{ movies|length }})
+                </h2>
+                <div class="movie-grid">
+                    {% for movie in movies %}
+                    <div class="movie-card">
+                        <div class="movie-image">
+                            <img src="{{ movie.image_url }}" alt="{{ movie.title }}" onerror="this.src='https://via.placeholder.com/300x450?text=No+Image'">
+                        </div>
+                        <div class="movie-info">
+                            <h3>{{ movie.title }}</h3>
+                            <p class="movie-meta">
+                                <span class="genre-badge">{{ movie.genre_display }}</span>
+                                <span class="year">{{ movie.year }}</span>
+                            </p>
+                            <p class="description">{{ movie.description }}</p>
+                            <button class="btn-watch"><i class="fas fa-play"></i> Смотреть</button>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>Фильмов в данном жанре не найдено.</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2023 Онлайн-кинотеатр. Все права защищены.</p>
+            <p>Сайт использует cookies для сохранения ваших предпочтений.</p>
+        </footer>
+    </div>
+</body>
+</html>
